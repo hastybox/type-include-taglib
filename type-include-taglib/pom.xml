@@ -4,12 +4,12 @@
 
 	<groupId>com.hastybox</groupId>
 	<artifactId>type-include-taglib</artifactId>
-	<version>0.1.4-SNAPSHOT</version>
+	<version>0.1.4</version>
 	<packaging>jar</packaging>
 
 	<name>type-include-taglib</name>
 	<description>A taglib that includes JSPs based on the type of given objects.</description>
-	<url>https://github.com/suicide/type-include-taglib</url>
+	<url>https://github.com/hastybox/type-include-taglib</url>
 
 	<licenses>
 		<license>
@@ -20,8 +20,8 @@
 	</licenses>
 
 	<scm>
-		<connection>https://github.com/suicide/type-include-taglib.git</connection>
-		<url>https://github.com/suicide/type-include-taglib</url>
+		<connection>https://github.com/hastybox/type-include-taglib.git</connection>
+		<url>https://github.com/hastybox/type-include-taglib</url>
 	</scm>
 
 	<developers>

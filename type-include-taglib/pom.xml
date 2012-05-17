@@ -19,8 +19,8 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:https://suicide@github.com/hastybox/type-include-taglib.git</connection>
-		<developerConnection>scm:git:https://suicide@github.com/hastybox/type-include-taglib.git</developerConnection>
+		<connection>scm:git:https://github.com/hastybox/type-include-taglib.git</connection>
+		<developerConnection>scm:git:https://github.com/hastybox/type-include-taglib.git</developerConnection>
 		<url>https://github.com/hastybox/type-include-taglib</url>
 	</scm>
 

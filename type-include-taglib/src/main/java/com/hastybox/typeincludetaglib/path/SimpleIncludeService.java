@@ -12,45 +12,74 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Creates request dispatcher for includes and stores paths for faster access.
+ * Include Service Singleton. A singleton implementation like described by GoF.
  * 
  * @author psy
  * 
  */
-public class IncludeFactory {
+public class SimpleIncludeService implements IncludeService {
 
 	/**
-	 * private constructor
+	 * path to folder holding JSP templates to include. The path must be
+	 * relative to the webapp root.
 	 */
-	private IncludeFactory() {
-		// no instances
+	private String basePath;
+
+	/**
+	 * cache for resolved paths to JSP templates
+	 */
+	private Map<String, String> pathStore;
+
+	/**
+	 * constructor
+	 */
+	public SimpleIncludeService() {
+		init();
+	}
+	
+	/**
+	 * constructor
+	 * @param basePath
+	 */
+	public SimpleIncludeService(String basePath) {
+		init();
+		this.basePath = basePath;
+	}
+	
+	/**
+	 * init method for initialization
+	 */
+	private void init() {
+		pathStore = new ConcurrentHashMap<String, String>();
+	}
+	
+
+	/**
+	 * @return the pathStore
+	 */
+	public Map<String, String> getPathStore() {
+		return pathStore;
+	}
+	
+	/**
+	 * clears all entries from the cache (pathStore)
+	 */
+	public void clearCache() {
+		pathStore.clear();
 	}
 
 	/**
-	 * base path for type templates to include
+	 * Sets the path to the folder containing the JSP templates to include. The
+	 * path must be relative to the webapp root.
+	 * 
+	 * @param basePath
+	 *            the basePath to set
 	 */
-	public static final String BASEPATH = "/WEB-INF/typeTemplates/";
-
-	/**
-	 * store for path lookups. Is it cool to store is here?
-	 */
-	private static final Map<String, String> PATH_STORE;
-
-	static {
-		PATH_STORE = new ConcurrentHashMap<String, String>();
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
 	}
 
-	/**
-	 * 
-	 * searches template from given <code>object</code> and
-	 * <code>template</code>
-	 * 
-	 * @param o
-	 * @param template
-	 * @param pageContext
-	 * @return
-	 */
-	public static RequestDispatcher getInclude(Object o, String template,
+	public RequestDispatcher getInclude(Object o, String template,
 			PageContext pageContext) throws JspException {
 
 		StringBuilder lookupBuilder = new StringBuilder();
@@ -60,7 +89,7 @@ public class IncludeFactory {
 
 		String lookupPath = lookupBuilder.toString();
 
-		String lookup = PATH_STORE.get(lookupPath);
+		String lookup = pathStore.get(lookupPath);
 
 		RequestDispatcher requestDispatcher;
 
@@ -81,7 +110,7 @@ public class IncludeFactory {
 			requestDispatcher = result.getRequestDispatcher();
 
 			// store in cache
-			PATH_STORE.put(lookupPath, result.getPath());
+			pathStore.put(lookupPath, result.getPath());
 
 		} else {
 			// just get it again
@@ -103,7 +132,7 @@ public class IncludeFactory {
 	 * @throws JspException
 	 */
 	@SuppressWarnings("rawtypes")
-	private static LookupResult findInclude(Class clazz, String template,
+	private LookupResult findInclude(Class clazz, String template,
 			PageContext pageContext) throws JspException {
 
 		LookupResult result = getRequestDispatcher(clazz, template, pageContext);
@@ -145,8 +174,8 @@ public class IncludeFactory {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	private static LookupResult getRequestDispatcher(Class clazz,
-			String template, PageContext pageContext) {
+	private LookupResult getRequestDispatcher(Class clazz, String template,
+			PageContext pageContext) {
 		String path = buildPath(clazz, template);
 
 		RequestDispatcher requestDispatcher = getRequestDispatcher(path,
@@ -163,12 +192,12 @@ public class IncludeFactory {
 	 * @param pageContext
 	 * @return
 	 */
-	private static RequestDispatcher getRequestDispatcher(String path,
+	private RequestDispatcher getRequestDispatcher(String path,
 			PageContext pageContext) {
 
 		InputStream stream = pageContext.getServletContext()
 				.getResourceAsStream(path);
-		
+
 		// return null if jsp is not available
 		if (stream == null) {
 			return null;
@@ -185,10 +214,10 @@ public class IncludeFactory {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	private static String buildPath(Class clazz, String template) {
+	private String buildPath(Class clazz, String template) {
 		// create path to jsp to be included
 		StringBuilder pathBuilder = new StringBuilder();
-		pathBuilder.append(BASEPATH);
+		pathBuilder.append(basePath);
 
 		// find package
 		Package selfPackage = clazz.getPackage();
@@ -207,23 +236,6 @@ public class IncludeFactory {
 		pathBuilder.append(".jsp");
 
 		return pathBuilder.toString();
-	}
-	
-	/**
-	 * clears include path cache
-	 */
-	public static void clearCache() {
-		PATH_STORE.clear();
-	}
-	
-	/**
-	 * 
-	 * exports Cache store
-	 * 
-	 * @return
-	 */
-	public static Map<String, String> getPathStore() {
-		return PATH_STORE;
 	}
 
 	/**
@@ -272,4 +284,5 @@ public class IncludeFactory {
 		}
 
 	}
+
 }

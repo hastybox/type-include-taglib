@@ -20,14 +20,15 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.hastybox.typeincludetaglib.model.ArticleImpl;
-import com.hastybox.typeincludetaglib.path.IncludeFactory;
+import com.hastybox.typeincludetaglib.path.IncludeService;
+import com.hastybox.typeincludetaglib.path.IncludeServiceFactory;
 
 /**
  * @author psy
  *
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({IncludeFactory.class})
+@PrepareForTest({IncludeServiceFactory.class})
 public class IncludeTagTest {
 	
 	/**
@@ -53,6 +54,8 @@ public class IncludeTagTest {
 	private RequestDispatcher requestDispatcher;
 	
 	private JspWriter jspWriter;
+	
+	private IncludeService includeService;
 
 	/**
 	 * @throws java.lang.Exception
@@ -65,6 +68,7 @@ public class IncludeTagTest {
 		
 		requestDispatcher = mock(RequestDispatcher.class);
 		jspWriter = mock(JspWriter.class);
+		includeService = mock(IncludeService.class);
 		
 		pageContext = mock(PageContext.class);
 		
@@ -72,7 +76,7 @@ public class IncludeTagTest {
 		when(pageContext.getResponse()).thenReturn(response);
 		when(pageContext.getOut()).thenReturn(jspWriter);
 		
- 		mockStatic(IncludeFactory.class);
+ 		mockStatic(IncludeServiceFactory.class);
 		
 		tag = new IncludeTag();
 		
@@ -95,8 +99,8 @@ public class IncludeTagTest {
 		tag.setSelf(object);
 		tag.setTemplate(template);
 		
-		when(IncludeFactory.getInclude(object, template, pageContext)).thenReturn(requestDispatcher);
-		
+		when(IncludeServiceFactory.getIncludeService()).thenReturn(includeService);
+		when(includeService.getInclude(object, template, pageContext)).thenReturn(requestDispatcher);
 		tag.doEndTag();
 		
 	}
@@ -115,7 +119,8 @@ public class IncludeTagTest {
 		
 		tag.addParam("name", "value");
 		
-		when(IncludeFactory.getInclude(object, template, pageContext)).thenReturn(requestDispatcher);
+		when(IncludeServiceFactory.getIncludeService()).thenReturn(includeService);
+		when(includeService.getInclude(object, template, pageContext)).thenReturn(requestDispatcher);
 		
 		tag.doEndTag();
 		
@@ -133,7 +138,8 @@ public class IncludeTagTest {
 		tag.setSelf(object);
 		tag.setTemplate(template);
 		
-		when(IncludeFactory.getInclude(object, template, pageContext)).thenReturn(null);
+		when(IncludeServiceFactory.getIncludeService()).thenReturn(includeService);
+		when(includeService.getInclude(object, template, pageContext)).thenReturn(null);
 		
 		try {
 			tag.doEndTag();

@@ -17,7 +17,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import com.hastybox.typeincludetaglib.path.IncludeFactory;
+import com.hastybox.typeincludetaglib.path.IncludeServiceFactory;
 import com.hastybox.typeincludetaglib.wrapper.AttributeWrappingHttpServletRequestWrapper;
 import com.hastybox.typeincludetaglib.wrapper.OutputWrappingHttpServletResponseWrapper;
 
@@ -95,7 +95,9 @@ public class IncludeTag extends BodyTagSupport {
 	public int doEndTag() throws JspException {
 
 		try {
-			RequestDispatcher requestDispatcher = IncludeFactory.getInclude(self, template, pageContext);
+			RequestDispatcher requestDispatcher = IncludeServiceFactory
+					.getIncludeService()
+					.getInclude(self, template, pageContext);
 
 			if (requestDispatcher == null) {
 				throw new JspException("Could not locate template");

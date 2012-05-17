@@ -23,7 +23,17 @@ import com.hastybox.typeincludetaglib.model.ArticleImpl;
  * @author psy
  *
  */
-public class IncludeFactoryTest {
+public class SimpleIncludeServiceTest {
+	
+	/**
+	 * service to test
+	 */
+	private SimpleIncludeService includeService;
+	
+	/**
+	 * base path
+	 */
+	private String basePath;
 	
 	/**
 	 * object to analyze
@@ -51,6 +61,12 @@ public class IncludeFactoryTest {
 	@Before
 	public void setUp() throws Exception {
 		
+		includeService = new SimpleIncludeService();
+		
+		basePath = "/some/path/";
+		
+		includeService.setBasePath(basePath);
+		
 		pageContext = mock(PageContext.class);
 		servletContext = mock(ServletContext.class);
 		request = mock(ServletRequest.class);
@@ -61,146 +77,145 @@ public class IncludeFactoryTest {
 		
 		object = null;
 		template = null;
-		IncludeFactory.clearCache();
 	}
 
 	/**
-	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
+	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeServiceFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
 	 */
 	@Test
 	public void testGetInclude() throws Exception {
 		object = new ArticleImpl();
 		template = null;
 		
-		String path = IncludeFactory.BASEPATH + packagePath + "ArticleImpl.jsp";
+		String path = basePath + packagePath + "ArticleImpl.jsp";
 		when(servletContext.getResourceAsStream(path)).thenReturn(new ByteArrayInputStream(new byte[]{}));
 		when(request.getRequestDispatcher(path)).thenReturn(requestDispatcher);
 		
-		RequestDispatcher rd = IncludeFactory.getInclude(object, template, pageContext);
+		RequestDispatcher rd = includeService.getInclude(object, template, pageContext);
 		
 		assertNotNull(rd);
-		assertTrue(IncludeFactory.getPathStore().size() == 1);
+		assertTrue(includeService.getPathStore().size() == 1);
 	}
 	
 	/**
-	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
+	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeServiceFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
 	 */
 	@Test
 	public void testGetIncludeTemplate() throws Exception {
 		object = new ArticleImpl();
 		template = "teaser";
 		
-		String path = IncludeFactory.BASEPATH + packagePath + "ArticleImpl." + template + ".jsp";
+		String path = basePath + packagePath + "ArticleImpl." + template + ".jsp";
 		when(servletContext.getResourceAsStream(path)).thenReturn(new ByteArrayInputStream(new byte[]{}));
 		when(request.getRequestDispatcher(path)).thenReturn(requestDispatcher);
 		
-		RequestDispatcher rd = IncludeFactory.getInclude(object, template, pageContext);
+		RequestDispatcher rd = includeService.getInclude(object, template, pageContext);
 		
 		assertNotNull(rd);
-		assertTrue(IncludeFactory.getPathStore().size() == 1);
+		assertTrue(includeService.getPathStore().size() == 1);
 	}
 	
 	/**
-	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
+	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeServiceFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
 	 */
 	@Test
 	public void testGetIncludeInterfaceTemplate() throws Exception {
 		object = new ArticleImpl();
 		template = "teaser";
 		
-		String path = IncludeFactory.BASEPATH + packagePath + "Article." + template + ".jsp";
+		String path = basePath + packagePath + "Article." + template + ".jsp";
 		when(servletContext.getResourceAsStream(path)).thenReturn(new ByteArrayInputStream(new byte[]{}));
 		when(request.getRequestDispatcher(path)).thenReturn(requestDispatcher);
 		
-		RequestDispatcher rd = IncludeFactory.getInclude(object, template, pageContext);
+		RequestDispatcher rd = includeService.getInclude(object, template, pageContext);
 		
 		assertNotNull(rd);
-		assertTrue(IncludeFactory.getPathStore().size() == 1);
+		assertTrue(includeService.getPathStore().size() == 1);
 	}
 	
 	/**
-	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
+	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeServiceFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
 	 */
 	@Test
 	public void testGetIncludeSuperClassTemplate() throws Exception {
 		object = new ArticleImpl();
 		template = "teaser";
 		
-		String path = IncludeFactory.BASEPATH + packagePath + "ArticleBase." + template + ".jsp";
+		String path = basePath + packagePath + "ArticleBase." + template + ".jsp";
 		when(servletContext.getResourceAsStream(path)).thenReturn(new ByteArrayInputStream(new byte[]{}));
 		when(request.getRequestDispatcher(path)).thenReturn(requestDispatcher);
 		
-		RequestDispatcher rd = IncludeFactory.getInclude(object, template, pageContext);
+		RequestDispatcher rd = includeService.getInclude(object, template, pageContext);
 		
 		assertNotNull(rd);
-		assertTrue(IncludeFactory.getPathStore().size() == 1);
+		assertTrue(includeService.getPathStore().size() == 1);
 	}
 	
 	/**
-	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
+	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeServiceFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
 	 */
 	@Test
 	public void testGetIncludeSuperClassInterfaceTemplate() throws Exception {
 		object = new ArticleImpl();
 		template = "teaser";
 		
-		String path = IncludeFactory.BASEPATH + packagePath + "Teasable." + template + ".jsp";
+		String path = basePath + packagePath + "Teasable." + template + ".jsp";
 		when(servletContext.getResourceAsStream(path)).thenReturn(new ByteArrayInputStream(new byte[]{}));
 		when(request.getRequestDispatcher(path)).thenReturn(requestDispatcher);
 		
-		RequestDispatcher rd = IncludeFactory.getInclude(object, template, pageContext);
+		RequestDispatcher rd = includeService.getInclude(object, template, pageContext);
 		
 		assertNotNull(rd);
-		assertTrue(IncludeFactory.getPathStore().size() == 1);
+		assertTrue(includeService.getPathStore().size() == 1);
 	}
 	
 	/**
-	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
+	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeServiceFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
 	 */
 	@Test
 	public void testGetIncludeObjectTemplate() throws Exception {
 		object = new ArticleImpl();
 		template = "teaser";
 		
-		String path = IncludeFactory.BASEPATH + "java.lang/Object." + template + ".jsp";
+		String path = basePath + "java.lang/Object." + template + ".jsp";
 		when(servletContext.getResourceAsStream(path)).thenReturn(new ByteArrayInputStream(new byte[]{}));
 		when(request.getRequestDispatcher(path)).thenReturn(requestDispatcher);
 		
-		RequestDispatcher rd = IncludeFactory.getInclude(object, template, pageContext);
+		RequestDispatcher rd = includeService.getInclude(object, template, pageContext);
 		
 		assertNotNull(rd);
-		assertTrue(IncludeFactory.getPathStore().size() == 1);
+		assertTrue(includeService.getPathStore().size() == 1);
 	}
 	
 	/**
-	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
+	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeServiceFactory#getInclude(java.lang.Object, java.lang.String, javax.servlet.jsp.PageContext)}.
 	 */
 	@Test
 	public void testGetIncludeNotFound() throws Exception {
 		object = new ArticleImpl();
 		template = null;
 		try {
-			IncludeFactory.getInclude(object, template, pageContext);
+			includeService.getInclude(object, template, pageContext);
 			fail();
 		} catch (Exception e) {
 			// pass
 		}
 		
-		assertTrue(IncludeFactory.getPathStore().isEmpty());
+		assertTrue(includeService.getPathStore().isEmpty());
 	}
 
 	/**
-	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeFactory#clearCache()}.
+	 * Test method for {@link com.hastybox.typeincludetaglib.path.IncludeServiceFactory#clearCache()}.
 	 */
 	@Test
 	public void testClearCache() {
-		Map<String, String> pathStore = IncludeFactory.getPathStore();
+		Map<String, String> pathStore = includeService.getPathStore();
 		
 		pathStore.put("something", "somethingElse");
 		
 		assertFalse(pathStore.isEmpty());
 		
-		IncludeFactory.clearCache();
+		includeService.clearCache();
 		
 		assertTrue(pathStore.isEmpty());
 	}

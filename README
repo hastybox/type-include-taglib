@@ -30,7 +30,9 @@ The "template" attribute is optional and decides which object template is to be 
 The param tag passes additional parameters to the included JSP. However parameters form parent JSP are also
 available as long as they are not overridden by the param tag.
 
-JSPs have to be placed in /WEB-INF/typeTemplates (this can be changed in source code)
+Default configuration:
+
+JSPs have to be placed in /WEB-INF/typeTemplates
 
 example JSPs
 
@@ -39,3 +41,28 @@ example JSPs
 /WEB-INF/typeTemplates/com.hastybox/Article.jsp
 /WEB-INF/typeTemplates/com.hastybox/Article.teaser.jsp
 /WEB-INF/typeTemplates/java.lang/Object.jsp
+
+Custom configuration:
+If you like to store your templates in another folder than typeTemplates, you need to instantiate an IncludeService.
+By default a SimpleIncludeService is instantiated on the first call of a type-include tag with the basePath
+"/WEB-INF/typeTemplates/" (beware the closing "/"). The tag calls the static Method IncludeServiceFactory.getIncludeService() 
+to retrieve a GoF-like singleton from the Factory class. If no IncludeService was defined previously a new SimpeIncludeService 
+is created with default values.
+To define a custom path to your templates you need to create a new SimpleIncludeService and set the basePath either by
+setter or in the constructor. At last you need to define your instance as the singleton instance of the IncludeServiceFactory
+as the tags use the factory to retrieve the IncludeService. This is to be done by using the static method
+IncludeServiceFactory.setIncludeService(). This method returns the given IncludeService for convenience.
+
+If you would like to create your own IncludeService implementation you just need to implement the respective interface
+and pass the instance to the IncludeServiceFactory as described before.
+
+Spring configuration:
+Here is an example on how to instantiate your a custom IncludeService and publish it as the singleton to use.
+
+<bean class="com.hastybox.typeincludetaglib.path.IncludeServiceFactory" factory-method="setIncludeService">
+	<constructor-arg>
+		<bean class="com.hastybox.typeincludetaglib.path.SimpleIncludeService">
+			<property name="basePath" value="/WEB-INF/somewhere/"/>
+		</bean>
+	</constructor-arg>
+</bean>
